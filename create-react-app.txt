@@ -1,0 +1,40 @@
+https://hackernoon.com/configure-eslint-prettier-and-flow-in-vs-code-for-react-development-c9d95db07213
+
+C:\Development\JS Learning\react-learning>create-react-app react-learning
+
+Creating a new React app in C:\Development\JS Learning\react-learning\react-learning.
+
+Installing packages. This might take a couple of minutes.
+Installing react, react-dom, and react-scripts...
+
+
+> uglifyjs-webpack-plugin@0.4.6 postinstall C:\Development\JS Learning\react-learning\react-learning\node_modules\uglifyjs-webpack-plugin
+> node lib/post_install.js
+
++ react@16.2.0
++ react-dom@16.2.0
++ react-scripts@1.1.0
+added 1276 packages in 335.285s
+
+Success! Created react-learning at C:\Development\JS Learning\react-learning\react-learning
+Inside that directory, you can run several commands:
+
+  npm start
+    Starts the development server.
+
+  npm run build
+    Bundles the app into static files for production.
+
+  npm test
+    Starts the test runner.
+
+  npm run eject
+    Removes this tool and copies build dependencies, configuration files
+    and scripts into the app directory. If you do this, you can’t go back!
+
+We suggest that you begin by typing:
+
+  cd react-learning
+  npm start
+
+Happy hacking!

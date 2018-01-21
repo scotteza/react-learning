@@ -7,7 +7,7 @@ class App extends Component {
       first: "Scott",
       last: "Edwards"
     };
-    const helloWorld = "Welcome to React, Scott!";
+    const helloWorld = `Welcome to React, ${scott.first}!`;
     const banana =
       "https://i5.walmartimages.ca/images/Enlarge/580/6_r/875806_R.jpg";
     return (

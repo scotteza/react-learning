@@ -4,6 +4,8 @@ import Developer from "./Developer";
 import IAmAStatelessFunctionalComponent from "./IAmAStatelessFunctionalComponent";
 import ExplainBindingsComponent from "./ExplainBindingsComponent";
 
+// Basic React forms: https://reactjs.org/docs/forms.html
+
 const list = [
   {
     title: "React",
@@ -23,15 +25,47 @@ const list = [
   }
 ];
 
+// ES5 way
+// function isSearched(searchTerm) {
+//   return function(item) {
+//     return item.title.toLowerCase().includes(searchTerm.toLowerCase());
+//   };
+// }
+
+// ES6 way
+const isSearched = searchTerm => item =>
+  item.title.toLowerCase().includes(searchTerm.toLowerCase());
+
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      list
+      list,
+      searchTerm: ""
     };
 
     this.onDismiss = this.onDismiss.bind(this);
+    this.onSearchChange = this.onSearchChange.bind(this);
+
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
+    // Destructuring 1
+    const user = {
+      firstname: "Robin",
+      lastname: "Wieruch"
+    };
+    const { firstname, lastname } = user;
+    console.log(firstname, lastname);
+    // Destructuring 2
+    const users = ["Robin", "Andrew", "Dan"];
+    const [u1, u2, u3] = users;
+    console.log(u1, u2, u3);
+  }
+
+  onSearchChange(event) {
+    this.setState({ searchTerm: event.target.value });
+    // console.log(this.state.searchTerm);
+    // console.log(event.target.value);
   }
 
   onDismiss(id) {
@@ -46,9 +80,23 @@ class App extends Component {
   }
 
   render() {
+    // Using destructuring here
+    const { searchTerm, list } = this.state;
+
+    // Same as saying:
+    // var searchTerm = this.state.searchTerm;
+    // var list = this.state.list;
+
     return (
       <div className="App">
-        {this.state.list.map(item => (
+        <form>
+          <input
+            value={searchTerm}
+            type="text"
+            onChange={this.onSearchChange}
+          />
+        </form>
+        {list.filter(isSearched(searchTerm)).map(item => (
           <div key={item.objectID}>
             <span>
               <a href={item.url}>{item.title}</a>

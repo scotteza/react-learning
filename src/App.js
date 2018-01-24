@@ -89,14 +89,42 @@ class App extends Component {
 
     return (
       <div className="App">
-        <form>
-          <input
-            value={searchTerm}
-            type="text"
-            onChange={this.onSearchChange}
-          />
-        </form>
-        {list.filter(isSearched(searchTerm)).map(item => (
+        <Search value={searchTerm} onChange={this.onSearchChange} />
+        <Table list={list} pattern={searchTerm} onDismiss={this.onDismiss} />
+        <div>
+          <Developer firstname="Bob" lastname="Smith" />
+        </div>
+        <div>
+          <Developer firstname="Jane" lastname="Jones" />
+        </div>
+        <div>
+          <IAmAStatelessFunctionalComponent firstname="Banana" lastname="Jam" />
+        </div>
+        <div>
+          <ExplainBindingsComponent />
+        </div>
+      </div>
+    );
+  }
+}
+
+class Search extends Component {
+  render() {
+    const { value, onChange } = this.props;
+    return (
+      <form>
+        <input type="text" value={value} onChange={onChange} />
+      </form>
+    );
+  }
+}
+
+class Table extends Component {
+  render() {
+    const { list, pattern, onDismiss } = this.props;
+    return (
+      <div>
+        {list.filter(isSearched(pattern)).map(item => (
           <div key={item.objectID}>
             <span>
               <a href={item.url}>{item.title}</a>
@@ -114,18 +142,6 @@ class App extends Component {
             </span>
           </div>
         ))}
-        <div>
-          <Developer firstname="Bob" lastname="Smith" />
-        </div>
-        <div>
-          <Developer firstname="Jane" lastname="Jones" />
-        </div>
-        <div>
-          <IAmAStatelessFunctionalComponent firstname="Banana" lastname="Jam" />
-        </div>
-        <div>
-          <ExplainBindingsComponent />
-        </div>
       </div>
     );
   }

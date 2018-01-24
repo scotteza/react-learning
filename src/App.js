@@ -3,6 +3,8 @@ import "./App.css";
 import Developer from "./Developer";
 import IAmAStatelessFunctionalComponent from "./IAmAStatelessFunctionalComponent";
 import ExplainBindingsComponent from "./ExplainBindingsComponent";
+// import Table from "./components/Table";
+// import Search from "./components/Search";
 
 // Basic React forms: https://reactjs.org/docs/forms.html
 
@@ -89,7 +91,9 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Search value={searchTerm} onChange={this.onSearchChange} />
+        <Search value={searchTerm} onChange={this.onSearchChange}>
+          Search
+        </Search>
         <Table list={list} pattern={searchTerm} onDismiss={this.onDismiss} />
         <div>
           <Developer firstname="Bob" lastname="Smith" />
@@ -133,10 +137,7 @@ class Table extends Component {
             <span>{item.num_comments}</span>
             <span>{item.points}</span>
             <span>
-              <button
-                onClick={() => this.onDismiss(item.objectID)}
-                type="button"
-              >
+              <button onClick={() => onDismiss(item.objectID)} type="button">
                 Dismiss
               </button>
             </span>

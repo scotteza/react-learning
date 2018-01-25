@@ -8,6 +8,13 @@ import ExplainBindingsComponent from "./ExplainBindingsComponent";
 
 // Basic React forms: https://reactjs.org/docs/forms.html
 
+const DEFAULT_QUERY = "redux";
+const PATH_BASE = "https://hn.algolia.com/api/v1";
+const PATH_SEARCH = "/search";
+const PARAM_SEARCH = "query=";
+const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
+console.log(url);
+
 const list = [
   {
     title: "React",
@@ -90,10 +97,12 @@ class App extends Component {
     // var list = this.state.list;
 
     return (
-      <div className="App">
-        <Search value={searchTerm} onChange={this.onSearchChange}>
-          Search
-        </Search>
+      <div className="page">
+        <div className="interactions">
+          <Search value={searchTerm} onChange={this.onSearchChange}>
+            Search
+          </Search>
+        </div>
         <Table list={list} pattern={searchTerm} onDismiss={this.onDismiss} />
         <div>
           <Developer firstname="Bob" lastname="Smith" />
@@ -119,25 +128,41 @@ const Search = ({ value, onChange, children }) => (
   </form>
 );
 
-const Table = ({ list, pattern, onDismiss }) => (
-  <div>
-    {list.filter(isSearched(pattern)).map(item => (
-      <div key={item.objectID}>
-        <span>
-          <a href={item.url}>{item.title}</a>
-        </span>
-        <span>{item.author}</span>
-        <span>{item.num_comments}</span>
-        <span>{item.points}</span>
-        <span>
-          <Button onClick={() => onDismiss(item.objectID)} type="button">
-            Dismiss
-          </Button>
-        </span>
-      </div>
-    ))}
-  </div>
-);
+const Table = ({ list, pattern, onDismiss }) => {
+  const largeColumn = {
+    width: "40%"
+  };
+  const midColumn = {
+    width: "30%"
+  };
+  const smallColumn = {
+    width: "10%"
+  };
+
+  return (
+    <div className="table">
+      {list.filter(isSearched(pattern)).map(item => (
+        <div key={item.objectID} className="table-row">
+          <span style={largeColumn}>
+            <a href={item.url}>{item.title}</a>
+          </span>
+          <span style={midColumn}>{item.author}</span>
+          <span style={smallColumn}>{item.num_comments}</span>
+          <span style={smallColumn}>{item.points}</span>
+          <span style={smallColumn}>
+            <Button
+              onClick={() => onDismiss(item.objectID)}
+              type="button"
+              className="button-inline"
+            >
+              Dismiss
+            </Button>
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const Button = ({ onClick, className = "", children }) => (
   <button onClick={onClick} className={className} type="button">

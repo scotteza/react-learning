@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import fetch from "isomorphic-fetch";
 import "./App.css";
+import PropTypes from "prop-types";
 
 // If you use index.js, you can omit it from the file path
 import {
@@ -176,11 +178,33 @@ const Table = ({ list, onDismiss }) => (
     ))}
   </div>
 );
+Table.propTypes = {
+  list: PropTypes.arrayOf(
+    PropTypes.shape({
+      objectID: PropTypes.string.isRequired,
+      author: PropTypes.string,
+      url: PropTypes.string,
+      num_comments: PropTypes.number,
+      points: PropTypes.number
+    })
+  ).isRequired,
+  onDismiss: PropTypes.func.isRequired
+};
 
-const Button = ({ onClick, className = "", children }) => (
+const Button = ({ onClick, className, children }) => (
   <button onClick={onClick} className={className} type="button">
     {children}
   </button>
 );
+Button.propTypes = {
+  onClick: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  children: PropTypes.node.isRequired
+};
+Button.defaultProps = {
+  className: ""
+};
 
 export default App;
+
+export { Button, Search, Table };

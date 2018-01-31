@@ -1,18 +1,16 @@
 import React, { Component } from "react";
 import "./App.css";
 
-const DEFAULT_QUERY = "redux";
-const DEFAULT_HPP = "20";
-
-// Swap these two to play with error handling
-const PATH_BASE = "https://hn.algolia.com/api/v1";
-// const PATH_BASE = "https://hn.foo.bar.com/api/v1";
-
-const PATH_SEARCH = "/search";
-const PARAM_SEARCH = "query=";
-const PARAM_PAGE = "page=";
-const PARAM_HPP = "hitsPerPage=";
-// const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}&${PARAM_PAGE}&${PARAM_HPP}${DEFAULT_HPP}`;
+// If you use index.js, you can omit it from the file path
+import {
+  DEFAULT_QUERY,
+  DEFAULT_HPP,
+  PATH_BASE,
+  PATH_SEARCH,
+  PARAM_SEARCH,
+  PARAM_PAGE,
+  PARAM_HPP
+} from "./constants";
 
 // Need to go back and understand this syntax again!
 // const isSearched = searchTerm => item =>

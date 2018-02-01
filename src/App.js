@@ -33,6 +33,22 @@ const SORTS = {
   POINTS: list => sortBy(list, "points").reverse()
 };
 
+const updateSearchTopStoriesState = (hits, page) => prevState => {
+  const { searchKey, results } = prevState;
+
+  const oldHits = results && results[searchKey] ? results[searchKey].hits : [];
+
+  const updatedHits = [...oldHits, ...hits];
+
+  return {
+    results: {
+      ...results,
+      [searchKey]: { hits: updatedHits, page }
+    },
+    isLoading: false
+  };
+};
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -67,25 +83,17 @@ class App extends Component {
     event.preventDefault();
   }
 
+  // setSearchTopStories takes in a result
   setSearchTopStories(result) {
+    // It pulls two vars out of the result
     const { hits, page } = result;
-
-    this.setState(prevState => {
-      const { searchKey, results } = prevState;
-
-      const oldHits =
-        results && results[searchKey] ? results[searchKey].hits : [];
-
-      const updatedHits = [...oldHits, ...hits];
-
-      return {
-        results: {
-          ...results,
-          [searchKey]: { hits: updatedHits, page }
-        },
-        isLoading: false
-      };
-    });
+    // It then calls this.setState, passing in a function as a parameter
+    // So, it actually passes in a higher-order function
+    // i.e. updateSearchTopStoriesState
+    //    1. takes in (hits, page)
+    //    2. returns a function that takes in prevState
+    //        2a. (which is the normal) method signature for a setState function parameter
+    this.setState(updateSearchTopStoriesState(hits, page));
   }
 
   fetchSearchTopStories(searchTerm, page = 0) {

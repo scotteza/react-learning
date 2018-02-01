@@ -1,5 +1,5 @@
 export const DEFAULT_QUERY = "redux";
-export const DEFAULT_HPP = "20";
+export const DEFAULT_HPP = "5";
 
 // Swap these two to play with error handling
 export const PATH_BASE = "https://hn.algolia.com/api/v1";

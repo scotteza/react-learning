@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { sortBy } from "lodash";
 import fetch from "isomorphic-fetch";
 import "./App.css";
 import PropTypes from "prop-types";
@@ -23,6 +24,14 @@ const add = x => y => x + y;
 const addTwo = add(2);
 console.log(addTwo(5));
 
+const SORTS = {
+  NONE: list => list,
+  TITLE: list => sortBy(list, "title"),
+  AUTHOR: list => sortBy(list, "author"),
+  COMMENTS: list => sortBy(list, "num_comments").reverse(),
+  POINTS: list => sortBy(list, "points").reverse()
+};
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -32,7 +41,9 @@ class App extends Component {
       searchKey: "",
       searchTerm: DEFAULT_QUERY,
       error: null,
-      isLoading: false
+      isLoading: false,
+      sortKey: "TITLE",
+      isSortReverse: false
     };
 
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
@@ -41,6 +52,13 @@ class App extends Component {
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
+    this.onSort = this.onSort.bind(this);
+  }
+
+  onSort(sortKey) {
+    const isSortReverse =
+      this.state.sortKey === sortKey && !this.state.isSortReverse;
+    this.setState({ sortKey, isSortReverse });
   }
 
   needsToSearchTopStories(searchTerm) {
@@ -112,7 +130,15 @@ class App extends Component {
   }
 
   render() {
-    const { searchTerm, results, searchKey, error, isLoading } = this.state;
+    const {
+      searchTerm,
+      results,
+      searchKey,
+      error,
+      isLoading,
+      sortKey,
+      isSortReverse
+    } = this.state;
 
     const page =
       (results && results[searchKey] && results[searchKey].page) || 0;
@@ -133,24 +159,28 @@ class App extends Component {
         </div>
         {/* Old way: conditional if list is not null */}
         {/* list && <Table list={list} onDismiss={this.onDismiss} /> */}
+        {/* Note from an online tut to explain this syntax: A conditional rendering in React can be applied in multiple ways. You can use if-else statements, the ternary operator or the logical && operator.*/}
         {/* New way: only display table if error is not null */}
         {error ? (
           <div className="interactions">
             <p>Something went wrong!</p>
           </div>
         ) : (
-          <Table list={list} onDismiss={this.onDismiss} />
+          <Table
+            list={list}
+            onDismiss={this.onDismiss}
+            sortKey={sortKey}
+            onSort={this.onSort}
+            isSortReverse={isSortReverse}
+          />
         )}
         <div className="interactions">
-          {isLoading ? (
-            <Loading />
-          ) : (
-            <Button
-              onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}
-            >
-              More
-            </Button>
-          )}
+          <ButtonWithLoading
+            isLoading={isLoading}
+            onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}
+          >
+            More
+          </ButtonWithLoading>
         </div>
       </div>
     );
@@ -181,28 +211,58 @@ class Search extends Component {
   }
 }
 
-const Table = ({ list, onDismiss }) => (
-  <div className="table">
-    {list.map(item => (
-      <div key={item.objectID} className="table-row">
+const Table = ({ list, onDismiss, sortKey, isSortReverse, onSort }) => {
+  const sortedList = SORTS[sortKey](list);
+  const reverseSortedList = isSortReverse ? sortedList.reverse() : sortedList;
+
+  return (
+    <div className="table">
+      {/* Header */}
+      <div className="table-header">
         <span style={{ width: "40%" }}>
-          <a href={item.url}>{item.title}</a>
+          <Sort sortKey={"TITLE"} onSort={onSort} activeSortKey={sortKey}>
+            Title
+          </Sort>
         </span>
-        <span style={{ width: "30%" }}>{item.author}</span>
-        <span style={{ width: "10%" }}>{item.num_comments}</span>
-        <span style={{ width: "10%" }}>{item.points}</span>
+        <span style={{ width: "30%" }}>
+          <Sort sortKey={"AUTHOR"} onSort={onSort} activeSortKey={sortKey}>
+            Author
+          </Sort>
+        </span>
         <span style={{ width: "10%" }}>
-          <Button
-            onClick={() => onDismiss(item.objectID)}
-            className="button-inline"
-          >
-            Dismiss
-          </Button>
+          <Sort sortKey={"COMMENTS"} onSort={onSort} activeSortKey={sortKey}>
+            Comments
+          </Sort>
         </span>
+        <span style={{ width: "10%" }}>
+          <Sort sortKey={"POINTS"} onSort={onSort} activeSortKey={sortKey}>
+            Points
+          </Sort>
+        </span>
+        <span style={{ width: "10%" }}>Archive</span>
       </div>
-    ))}
-  </div>
-);
+      {/* Data */}
+      {reverseSortedList.map(item => (
+        <div key={item.objectID} className="table-row">
+          <span style={{ width: "40%" }}>
+            <a href={item.url}>{item.title}</a>
+          </span>
+          <span style={{ width: "30%" }}>{item.author}</span>
+          <span style={{ width: "10%" }}>{item.num_comments}</span>
+          <span style={{ width: "10%" }}>{item.points}</span>
+          <span style={{ width: "10%" }}>
+            <Button
+              onClick={() => onDismiss(item.objectID)}
+              className="button-inline"
+            >
+              Dismiss
+            </Button>
+          </span>
+        </div>
+      ))}
+    </div>
+  );
+};
 Table.propTypes = {
   list: PropTypes.arrayOf(
     PropTypes.shape({
@@ -225,12 +285,42 @@ Button.propTypes = {
   onClick: PropTypes.func.isRequired,
   className: PropTypes.string,
   children: PropTypes.node.isRequired
+  // TODO: figure out why this doesn't work
+  // ,anotherExampleProp: React.PropTypes.oneOf(["info", "warning", "error"])
 };
 Button.defaultProps = {
   className: ""
 };
 
 const Loading = () => <div>Loading...</div>;
+
+// This:
+// function withFoo(Component) {
+//   return function(props) {
+//     return <Component {...props} />;
+//   };
+// }
+// Is the verbose version of :
+const withLoading = Component => ({ isLoading, ...rest }) =>
+  isLoading ? <Loading /> : <Component {...rest} />;
+// Note that we are using rest destructuring here, i.e.:
+// const [x, ...y] = ['a', 'b', 'c']; // x='a'; y=['b', 'c']
+// Note: Higher order components can come with the naming prefix with, but it is not mandatory
+
+// Creating an HOC
+const ButtonWithLoading = withLoading(Button);
+
+const Sort = ({ sortKey, onSort, activeSortKey, children }) => {
+  const sortClass = ["button-inline"];
+  if (sortKey === activeSortKey) {
+    sortClass.push("button-active");
+  }
+  return (
+    <Button onClick={() => onSort(sortKey)} className={sortClass.join(" ")}>
+      {children}
+    </Button>
+  );
+};
 
 export default App;
 

@@ -1,1 +1,16 @@
-{}
+{
+  "files.exclude": {
+    "__error": "Not found",
+    "src\\__snapshots__": true,
+    ".vscode": true,
+    ".gitignore": true,
+    ".eslintrc.js": true,
+    "create-react-app.txt": true,
+    "package-lock.json": true,
+    "package.json": true,
+    "README.md": true,
+    "public": true,
+    "node_modules": true,
+    "build": true
+  }
+}

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { sortBy } from "lodash";
+import classNames from "classnames";
 import fetch from "isomorphic-fetch";
 import "./App.css";
 import PropTypes from "prop-types";
@@ -311,12 +312,12 @@ const withLoading = Component => ({ isLoading, ...rest }) =>
 const ButtonWithLoading = withLoading(Button);
 
 const Sort = ({ sortKey, onSort, activeSortKey, children }) => {
-  const sortClass = ["button-inline"];
-  if (sortKey === activeSortKey) {
-    sortClass.push("button-active");
-  }
+  const sortClass = classNames("button-inline", {
+    "button-active": sortKey === activeSortKey
+  });
+
   return (
-    <Button onClick={() => onSort(sortKey)} className={sortClass.join(" ")}>
+    <Button onClick={() => onSort(sortKey)} className={sortClass}>
       {children}
     </Button>
   );

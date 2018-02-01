@@ -190,7 +190,9 @@ class App extends Component {
 
 class Search extends Component {
   componentDidMount() {
-    this.input.focus();
+    if (this.input) {
+      this.input.focus();
+    }
   }
 
   render() {

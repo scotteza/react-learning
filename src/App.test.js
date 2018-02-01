@@ -48,11 +48,20 @@ describe("Search", () => {
 describe("Button", () => {
   it("renders without crashing", () => {
     const div = document.createElement("div");
-    ReactDOM.render(<Button>Give me more</Button>, div);
+    ReactDOM.render(
+      <Button onClick={() => null} onDismiss={() => null}>
+        Give me more
+      </Button>,
+      div
+    );
   });
 
   test("has a valid snapshot", () => {
-    const component = renderer.create(<Button>Give me more</Button>);
+    const component = renderer.create(
+      <Button onClick={() => null} onDismiss={() => null}>
+        Give me more
+      </Button>
+    );
     let tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
@@ -72,11 +81,13 @@ describe("Table", () => {
   };
   it("renders without crashing", () => {
     const div = document.createElement("div");
-    ReactDOM.render(<Table {...props} />, div);
+    ReactDOM.render(<Table {...props} onDismiss={() => null} />, div);
   });
 
   test("has a valid snapshot", () => {
-    const component = renderer.create(<Table {...props} />);
+    const component = renderer.create(
+      <Table {...props} onDismiss={() => null} />
+    );
     let tree = component.toJSON();
     expect(tree).toMatchSnapshot();
   });
@@ -88,7 +99,7 @@ describe("Table", () => {
     // • If componentDidMount() or componentDidUpdate() should be tested, use mount()
     // • If you want to test component lifecycle and children behavior, use mount()
     // • If you want to test a component’s children rendering with less overhead than mount() and you are not interested in lifecycle methods, use render()
-    const element = shallow(<Table {...props} />);
+    const element = shallow(<Table {...props} onDismiss={() => null} />);
 
     expect(element.find(".table-row").length).toBe(2);
   });
